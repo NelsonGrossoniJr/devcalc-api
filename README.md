@@ -1,0 +1,1 @@
+Navegue até a pasta raiz do prjeto e para executar esse projeto rode o comando: .\mvnw.cmd spring-boot:run
