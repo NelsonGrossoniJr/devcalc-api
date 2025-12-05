@@ -15,7 +15,6 @@ class CalculatorServiceTest {
 
     @Test
     void testAdd() {
-        // Teste básico
         assertEquals(15.0, calculatorService.add(10.0, 5.0));
         assertEquals(0.0, calculatorService.add(0.0, 0.0));
         assertEquals(-5.0, calculatorService.add(-10.0, 5.0));
@@ -24,7 +23,6 @@ class CalculatorServiceTest {
 
     @Test
     void testSubtract() {
-        // Teste básico
         assertEquals(5.0, calculatorService.subtract(10.0, 5.0));
         assertEquals(0.0, calculatorService.subtract(5.0, 5.0));
         assertEquals(-15.0, calculatorService.subtract(-10.0, 5.0));
@@ -33,7 +31,6 @@ class CalculatorServiceTest {
 
     @Test
     void testMultiply() {
-        // Teste básico
         assertEquals(50.0, calculatorService.multiply(10.0, 5.0));
         assertEquals(0.0, calculatorService.multiply(0.0, 5.0));
         assertEquals(-50.0, calculatorService.multiply(-10.0, 5.0));
@@ -42,7 +39,6 @@ class CalculatorServiceTest {
 
     @Test
     void testDivide() {
-        // Teste básico
         assertEquals(2.0, calculatorService.divide(10.0, 5.0));
         assertEquals(0.0, calculatorService.divide(0.0, 5.0));
         assertEquals(-2.0, calculatorService.divide(-10.0, 5.0));

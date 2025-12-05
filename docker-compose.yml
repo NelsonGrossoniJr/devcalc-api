@@ -1,0 +1,83 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: devcalc-postgres
+    environment:
+      POSTGRES_DB: devcalc_db
+      POSTGRES_USER: devcalc_user
+      POSTGRES_PASSWORD: devcalc_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devcalc_user -d devcalc_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - devcalc-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: devcalc-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - devcalc-network
+    restart: unless-stopped
+
+  devcalc:
+    image: devcalc:praticando
+    container_name: devcalc-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/devcalc_db
+      SPRING_DATASOURCE_USERNAME: devcalc_user
+      SPRING_DATASOURCE_PASSWORD: devcalc_password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    volumes:
+      - shared_volume:/shared
+    networks:
+      - devcalc-network
+    restart: unless-stopped
+
+  test-container:
+    image: busybox:latest
+    container_name: devcalc-test
+    volumes:
+      - shared_volume:/shared
+    networks:
+      - devcalc-network
+    command: sleep infinity
+    depends_on:
+      - postgres
+      - redis
+      - devcalc
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  shared_volume:
+    driver: local
+
+networks:
+  devcalc-network:
+    driver: bridge

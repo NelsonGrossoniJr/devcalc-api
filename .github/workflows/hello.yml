@@ -1,0 +1,14 @@
+name: Hello CI/CD
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello CI/CD
+        run: echo "Hello CI/CD"
+
