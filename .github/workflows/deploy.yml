@@ -10,19 +10,33 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [dev, staging, prod]
+        include:
+          - environment: dev
+            deploy_url_secret: DEPLOY_URL_DEV
+            api_key_secret: API_KEY_DEV
+          - environment: staging
+            deploy_url_secret: DEPLOY_URL_STAGING
+            api_key_secret: API_KEY_STAGING
+          - environment: prod
+            deploy_url_secret: DEPLOY_URL_PROD
+            api_key_secret: API_KEY_PROD
     env:
       DEPLOY_ENV: ${{ matrix.environment }}
-      DEPLOY_URL: ${{ secrets[format('DEPLOY_URL_{0}', matrix.environment)] }}
-      API_KEY: ${{ secrets[format('API_KEY_{0}', matrix.environment)] }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
       - name: Deploy em ${{ matrix.environment }}
+        env:
+          DEPLOY_URL: ${{ secrets[matrix.deploy_url_secret] }}
+          API_KEY: ${{ secrets[matrix.api_key_secret] }}
         run: |
           echo "Deploy em ${{ matrix.environment }} iniciado"
-          echo "URL: $DEPLOY_URL"
-          echo "API_KEY configurada"
+          if [ -n "$DEPLOY_URL" ]; then
+            echo "URL configurada"
+          fi
+          if [ -n "$API_KEY" ]; then
+            echo "API_KEY configurada"
+          fi
           echo "Deploy em ${{ matrix.environment }} concluído"
 
