@@ -1,6 +1,9 @@
 name: Java Matrix
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
