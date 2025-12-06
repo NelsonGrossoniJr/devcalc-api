@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, staging, prod]
+    env:
+      DEPLOY_ENV: ${{ matrix.environment }}
+      DEPLOY_URL: ${{ secrets[format('DEPLOY_URL_{0}', matrix.environment)] }}
+      API_KEY: ${{ secrets[format('API_KEY_{0}', matrix.environment)] }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Deploy em ${{ matrix.environment }}
+        run: |
+          echo "Deploy em ${{ matrix.environment }} iniciado"
+          echo "URL: $DEPLOY_URL"
+          echo "API_KEY configurada"
+          echo "Deploy em ${{ matrix.environment }} concluído"
+
